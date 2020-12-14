@@ -60,7 +60,7 @@ class SignatureRequestController extends Controller
      * @throws \HelloSign\BaseException
      * @throws \HelloSign\Error
      */
-    public function store(Request $request, \Industrious\HelloSignLaravel\Classes\SignatureRequest $signature_request)
+    public function store(Request $request)
     {
         $data = $request->all();
 
