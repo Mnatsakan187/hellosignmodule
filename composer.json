@@ -9,15 +9,16 @@
     "license": "MIT",
     "require": {
         "php": "^7.2.5",
+        "doctrine/dbal": "^2.10",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "guzzlehttp/guzzle": "^6.3",
+        "hellosign/hellosign-php-sdk": "^3.0",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "^2.0",
         "setasign/fpdf": "1.8.*",
-        "setasign/fpdi": "^2.0",
-        "hellosign/hellosign-php-sdk": "^3.0"
+        "setasign/fpdi": "^2.0"
     },
     "require-dev": {
         "facade/ignition": "^2.0",
