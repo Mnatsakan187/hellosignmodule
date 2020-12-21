@@ -60,26 +60,16 @@ class SignatureContractController extends Controller
 
         $file = $request->file('signature_contract_file');
 
-        if ($file->extension() == 'pdf') {
-
-            $filename = $file->hashName();
-            if($request->hasfile('signature_contract_file')){
-                Storage::disk('public')->put('signature_contracts', $file);
-            }
-
-            SignatureContract::create([
-                'signature_contract_name' => $data['signature_contract_name'],
-                'signature_contract_file' => $filename,
-                'type' => $file->extension(),
-            ]);
-
-        }else{
-            SignatureContract::create([
-                'signature_contract_name' => $data['signature_contract_name'],
-                'signature_contract_file' => file_get_contents($data['signature_contract_file']),
-                'type' => $file->extension(),
-            ]);
+        $filename = $file->hashName();
+        if($request->hasfile('signature_contract_file')){
+            Storage::disk('public')->put('signature_contracts', $file);
         }
+
+        SignatureContract::create([
+            'signature_contract_name' => $data['signature_contract_name'],
+            'signature_contract_file' => $filename,
+            'type' => $file->extension(),
+        ]);
 
         return redirect()->route('signature-contract.index')
             ->with('success', 'Signature Contract upload successfully.');
@@ -134,12 +124,6 @@ class SignatureContractController extends Controller
             'signature_contract_name' => $data['signature_contract_name'],
         ]);
 
-        if(isset($data['summary_ckeditor']) && $data['summary_ckeditor']){
-            $signatureContract ->update([
-                'signature_contract_name' => $data['signature_contract_name'],
-                'signature_contract_file' => $data['summary_ckeditor'],
-            ]);
-        }
 
         if($request->hasfile('signature_contract_file')){
             $signatureContract =  SignatureContract::findOrFail($id);

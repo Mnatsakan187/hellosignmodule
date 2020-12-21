@@ -42,18 +42,18 @@
                                             Please fill the Email
                                         </div>
 
-                                        @if($signatureContract->type == 'pdf')
+
                                             <embed class="mt-3" id="embed-content" width="1100px" height="800px"
-                                                src="{{asset('storage/signature_contracts/'.$signatureContract->signature_contract_file)}}">
-                                        @endif
+                                                src="{{asset('/storage/signature_contracts/'.$signatureContract->signature_contract_file)}}">
+
 
 
                                     </div>
-                                    @if($signatureContract->type == 'html')
-                                        <textarea class="mt-3"  id="summary-ckeditor" name="summary_ckeditor" >
-                                                {!! $signatureContract->signature_contract_file !!}
-                                        </textarea>
-                                    @endif
+                                    {{--@if($signatureContract->type == 'html')--}}
+                                        {{--<textarea class="mt-3"  id="summary-ckeditor" name="summary_ckeditor" >--}}
+                                                {{--{!! $signatureContract->signature_contract_file !!}--}}
+                                        {{--</textarea>--}}
+                                    {{--@endif--}}
 
                                 </div>
 
