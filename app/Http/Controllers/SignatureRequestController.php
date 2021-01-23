@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\SignatureContract;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class SignatureRequestController extends Controller
 {
@@ -16,8 +17,8 @@ class SignatureRequestController extends Controller
     public function index()
     {
         $client = new \HelloSign\Client(env('HELLOSIGN_API_KEY'));
-
         $signatureRequests = $client->getSignatureRequests();
+
 
         $data = [
             'category_name' => 'signature-request',
@@ -52,6 +53,11 @@ class SignatureRequestController extends Controller
 
         return view('pages.signature_request.create')->with($data);
     }
+    public function countPages($path) {
+        $pdftext = file_get_contents($path);
+        $num = preg_match_all("/\/Page\W/", $pdftext, $dummy);
+        return $num;
+    }
 
     /**
      * @param Request $request
@@ -74,13 +80,35 @@ class SignatureRequestController extends Controller
         $request->setSubject($data['signature_request_subject']);
         $request->setMessage($data['signature_request_message']);
         $request->addSigner($user['email'],  $user['name']);
-
         $signatureContract =  SignatureContract::where('id', $data['signature_contract'])->first();
+        $path = storage_path('app\\public\\signature_contracts\\'.$signatureContract->signature_contract_file);
+        $request->addFile($path);
 
-        $request->addFile(storage_path('app\\public\\signature_contracts\\'.$signatureContract->signature_contract_file));
+        if(pathinfo($path, PATHINFO_EXTENSION) == "pdf" && $this->countPages($path) > 0){
 
+            $array = [];
+            for ($i = 1; $i <= $this->countPages($path); $i++) {
+               $array[] =     array( //field 1
+                   "api_id"=> Hash::make(time()),
+                   "name"=> "",
+                   "type"=> "signature",
+                   "x"=> 220,
+                   "y"=> 760,
+                   "width"=> 150,
+                   "height"=> 30,
+                   "required"=> true,
+                   "signer"=> 0,
+                   "page" => $i
+               );
+            }
+
+            $request->setFormFieldsPerDocument(
+                array(
+                    $array
+                )
+            );
+        }
         $response = $client->sendSignatureRequest($request);
-
         return redirect()->route('signature-request.index')
             ->with('success', 'Signature Contract upload successfully.');
     }
